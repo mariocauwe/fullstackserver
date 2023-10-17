@@ -1,6 +1,6 @@
 require('dotenv').config()
 require('./middleware/databaseConnect')
-//require('./middleware/errorHandler')
+require('./middleware/errorHandler')
 
 const express = require('express')
 var morgan = require('morgan')
@@ -13,18 +13,6 @@ app.use(express.json())
 
 morgan.token('reqbody', function (req, res) { return req.method==='POST'?JSON.stringify(req.body):null})
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :reqbody'))
-
-const errorHandler = (error, request, response, next) => {
-  console.error(error.message)
-
-  if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'malformatted id' })
-  } 
-
-  next(error)
-}
-// this has to be the last loaded middleware.
- app.use(errorHandler)
 
 const PORT = process.env.PORT || 3030
 app.listen(PORT, () => {
@@ -98,14 +86,14 @@ app.listen(PORT, () => {
           name: newPerson.name,
           number: newPerson.number
         })
-        person.save().then(savedPerson => {
-          response.json(savedPerson)
-        })
-        .catch( (error) => {
-          console.log(error)
-          next(error)
-          //response.status(500).end()
-        })
+        person.save()
+          .then(savedPerson => {
+            response.json(savedPerson)
+          })
+          .catch( (error) => {
+            console.log("catch person.save",error)
+            next(error)
+          })
        }
     })
     
@@ -116,13 +104,13 @@ app.listen(PORT, () => {
     let updatePerson = request.body
     console.log("put", updatePerson);
 
-    Person.findByIdAndUpdate(request.params.id, updatePerson)
+    Person.findByIdAndUpdate(request.params.id, updatePerson,{ runValidators: true })
     .then(result => {
       response.statusMessage="Person updated"
       response.status(204).end()
     })
     .catch(error => {
-      console.log(error)
+      console.log("catch person update",error)
       next(error)
       //response.status(400).send({message: "Person not found"})
     })
@@ -132,10 +120,24 @@ app.listen(PORT, () => {
     Person.countDocuments({})
     .then(result => {
       console.log(result)
-      response.json(result)
+      response.send(`There are ${result} entries in the phonebook on ${new Date()}`)
     })
     .catch(error => {
       console.log(error)
       next(error)
     })
   })
+
+  const errorHandler = (err, request, response, next) => {
+    console.error("errorHandler1 error type",err.name)
+    if (err.name === 'CastError') {
+      return response.status(400).json({ content: 'malformatted id' })
+    } else if(err.name === 'ValidationError') {
+        let str =  err.message
+        console.log("errorHandler2",str)
+        return response.status(400).json({ content: str})
+    }
+    next(err)
+  }
+  // this has to be the last loaded middleware.
+ app.use(errorHandler)

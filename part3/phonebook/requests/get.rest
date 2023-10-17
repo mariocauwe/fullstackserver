@@ -1,1 +1,1 @@
-https://phonebook-xutl.onrender.com/api/persons
+GET https://phonebook-xutl.onrender.com/api/persons

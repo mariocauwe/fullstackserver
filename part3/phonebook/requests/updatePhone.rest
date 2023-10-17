@@ -1,0 +1,8 @@
+#PUT https://phonebook-xutl.onrender.com/api/persons  HTTP/1.1
+PUT http://localhost:3001/api/persons/652acf23657a3e1cf4be9d96  HTTP/1.1
+content-type: application/json
+
+{
+    "name":"bca",
+   "number":"3-771234"
+}
