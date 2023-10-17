@@ -1,0 +1,2 @@
+#GET https://phonebook-xutl.onrender.com/api/blogs
+GET http://localhost:3003/api/blogs
