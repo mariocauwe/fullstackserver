@@ -3,8 +3,8 @@ POST http://localhost:3003/api/blogs  HTTP/1.1
 content-type: application/json
 
 {
-    "title":"blog 2",
-    "author":"mario",
-    "url":"https://fullstackopen.com/",
-    "likes":20
+    "title":"blog 3",
+    "author":"Jimmy",
+    "url":"https://jestjs.io/",
+    "likes":7
 }
