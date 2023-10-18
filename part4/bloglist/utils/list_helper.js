@@ -1,4 +1,5 @@
 const logger = require('../utils/logger')
+const lodash = require('lodash')
 
 const dummy = (blogs) => {
     logger.info('returning fixed 1 for',blogs)
@@ -27,6 +28,46 @@ const favoriteBlog = (blogs) => {
     }
 }
 
+const mostBlogs = (blogs) => {
+    let result = { author: '', blogs: 0 }
+    const grouped = lodash.countBy(blogs, (blog) => {
+        return blog.author
+    })
+    logger.info('mostblogs grouped',grouped)
+    Object.keys(grouped).forEach( (author) => {
+        if(grouped[author] > result.blogs) {
+            result.author = author
+            result.blogs = grouped[result.author]
+        }
+    })
+    return result
+}
+
+const mostLikes = (blogs) => {
+    // logger.info('mostLikes blogs',blogs)
+    let result = { author: '', likes: 0 }
+
+    const grouped = lodash.groupBy(blogs, (blog) => {
+        return blog.author
+    })
+    //logger.info('mostLikes grouped',grouped)
+    Object.keys(grouped).forEach( (blogsByAuthor) => {
+        let likes
+        //logger.info('likes',grouped[blogsByAuthor])
+        likes = grouped[blogsByAuthor].reduce( (total,blog) => {
+            //logger.info('blog in array',blog)
+            return total + blog.likes
+        },0)
+        grouped[blogsByAuthor] = likes
+        if(likes>result.likes) {
+            result.likes = likes
+            result.author = blogsByAuthor
+        }
+    })
+    logger.info('mostLikes grouped',grouped)
+    return result
+}
+
 module.exports = {
-    dummy, totalLikes, favoriteBlog
+    dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes
 }
