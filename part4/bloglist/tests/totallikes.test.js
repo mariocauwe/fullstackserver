@@ -55,7 +55,7 @@ describe('total likes', () => {
 
     test('when list has only one blog, equals the likes of that', () => {
         const result = listHelper.totalLikes(listWithMultiBlog)
-        expect(result).toBe(17)
+        expect(result).toBe(31)
     })
     test('when list has no blogs, equals the likes of that', () => {
         const result = listHelper.totalLikes([])
@@ -67,7 +67,7 @@ describe('favorite blog', () => {
     test('find the first most favourite blog', () => {
         const result = listHelper.favoriteBlog(listWithMultiBlog)
         //logger.info('result in test',result)
-        expect(result).toEqual({ author: 'mario', title: 'blog 2', likes: 12 })
+        expect(result).toEqual({ author: 'Mario', title: 'blog 2', likes: 12 })
     })
 })
 
@@ -79,7 +79,7 @@ describe('author with most blogs', () => {
     })
 })
 describe('author with most likes', () => {
-    test.only('find the first author with the most likes', () => {
+    test('find the first author with the most likes', () => {
         const result = listHelper.mostLikes(listWithMultiBlog)
         logger.info('result in test',result)
         expect(result).toEqual({ author: 'Mario', likes: 19 })
